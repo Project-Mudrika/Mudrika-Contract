@@ -1,0 +1,12 @@
+node_modules
+.env
+coverage
+coverage.json
+typechain
+pnpm-lock.yaml
+.pnpm-debug.log
+package-lock.json
+
+#Hardhat files
+cache
+artifacts
