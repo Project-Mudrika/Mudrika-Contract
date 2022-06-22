@@ -7,8 +7,8 @@ contract Mudrika {
     address private _owner;
     mapping(address => User) private users;
 
-    uint256 private _requestCount;
-    mapping(uint256 => Request) private requestsReceived;
+    uint256 public requestCount;
+    mapping(uint256 => Request) public requestsReceived;
 
     enum UserType {
         PUBLIC,
@@ -57,19 +57,15 @@ contract Mudrika {
 
     constructor() {
         _owner = msg.sender;
-        _requestCount = 0;
-        addAdmin(msg.sender, 4, "Admin");
+        requestCount = 0;
+        addAdmin(msg.sender, "Admin");
     }
 
-    function addAdmin(
-        address account,
-        uint8 userType,
-        string memory name
-    ) private {
+    function addAdmin(address account, string memory name) private {
         User memory newUser = User({
             name: name,
             account: account,
-            userType: UserType(userType)
+            userType: UserType.ADMIN
         });
 
         users[account] = newUser;
@@ -83,7 +79,9 @@ contract Mudrika {
         address account,
         uint8 userType,
         string memory name
-    ) public onlyAdmin {
+    ) public {
+        //only add users of equal of lower authority
+        require(uint8(users[msg.sender].userType) >= userType);
         User memory newUser = User({
             name: name,
             account: account,
@@ -93,25 +91,27 @@ contract Mudrika {
         users[account] = newUser;
     }
 
-    function requestFunds(uint256 amount, string memory description)
-        public
-        lowerAuthority
-    {
+    function requestFunds(
+        uint256 amount,
+        address to,
+        string memory description // lowerAuthority
+    ) public {
         Request memory newReq = Request({
             description: description,
-            from: address(this),
-            to: msg.sender,
+            from: msg.sender,
+            to: to,
             fund: amount,
-            requestId: _requestCount + 1,
+            requestId: requestCount + 1,
             approvalStatus: false
         });
 
-        requestsReceived[_requestCount + 1] = newReq;
-        _requestCount++;
+        requestsReceived[requestCount + 1] = newReq;
+        requestCount++;
     }
 
     function approveRequest(uint256 requestId) public higherAuthority {
-        require(requestId <= _requestCount);
+        require(requestId <= requestCount);
+        requestsReceived[requestId].approvalStatus = true;
         sendFunds(
             requestsReceived[requestId].to,
             requestsReceived[requestId].fund

@@ -6,6 +6,12 @@ typechain
 pnpm-lock.yaml
 .pnpm-debug.log
 package-lock.json
+contracts/Greeter.sol
+contracts/election.sol
+contracts/nft.sol
+scripts/sample-script.js
+test/sample-test.js
+.env.local
 
 #Hardhat files
 cache
