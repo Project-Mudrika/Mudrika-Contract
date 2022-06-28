@@ -111,15 +111,20 @@ contract Mudrika {
 
     function approveRequest(uint256 requestId) public higherAuthority {
         require(requestId <= requestCount);
-        requestsReceived[requestId].approvalStatus = true;
         sendFunds(
-            requestsReceived[requestId].to,
-            requestsReceived[requestId].fund
+            requestsReceived[requestId].from,
+            requestsReceived[requestId].fund,
+            requestId
         );
     }
 
-    function sendFunds(address to, uint256 amount) private {
+    function sendFunds(
+        address to,
+        uint256 amount,
+        uint256 requestId
+    ) private {
         require(amount <= address(this).balance, "Insufficient Funds");
+        requestsReceived[requestId].approvalStatus = true;
         payable(to).transfer(amount);
         emit fundTransferred(amount, to);
     }
