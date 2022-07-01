@@ -46,12 +46,18 @@ contract Mudrika {
     }
 
     modifier higherAuthority() {
-        require(users[msg.sender].userType == UserType.AUTHORITY_HIGH);
+        require(
+            users[msg.sender].userType == UserType.AUTHORITY_HIGH,
+            "Only HigherAuthority can perform this action"
+        );
         _;
     }
 
     modifier lowerAuthority() {
-        require(users[msg.sender].userType == UserType.AUTHORITY_LOW);
+        require(
+            users[msg.sender].userType == UserType.AUTHORITY_LOW,
+            "Only LowerAuthority can perform this action"
+        );
         _;
     }
 
@@ -81,7 +87,10 @@ contract Mudrika {
         string memory name
     ) public {
         //only add users of equal of lower authority
-        require(uint8(users[msg.sender].userType) >= userType);
+        require(
+            uint8(users[msg.sender].userType) >= userType,
+            "Lower auth user cannot add higher auth user"
+        );
         User memory newUser = User({
             name: name,
             account: account,
@@ -110,7 +119,11 @@ contract Mudrika {
     }
 
     function approveRequest(uint256 requestId) public higherAuthority {
-        require(requestId <= requestCount);
+        require(requestId <= requestCount, "Request not found");
+        require(
+            requestsReceived[requestId].approvalStatus == false,
+            "Request already approved"
+        );
         sendFunds(
             requestsReceived[requestId].from,
             requestsReceived[requestId].fund,
