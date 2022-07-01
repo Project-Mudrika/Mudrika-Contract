@@ -34,7 +34,7 @@ contract Mudrika {
     }
 
     event requestAdded(uint256 requestId);
-    event fundTransferred(uint256 amount, address to);
+    event fundTransferred(uint256 requestId, uint256 amount, address to);
     event fundDeposited(uint256 amount, address by);
 
     modifier onlyAdmin() {
@@ -139,7 +139,7 @@ contract Mudrika {
         require(amount <= address(this).balance, "Insufficient Funds");
         requestsReceived[requestId].approvalStatus = true;
         payable(to).transfer(amount);
-        emit fundTransferred(amount, to);
+        emit fundTransferred(requestId, amount, to);
     }
 
     // function viewRequests() public view higherAuthority returns (Request) {}
