@@ -31,6 +31,7 @@ contract Mudrika {
         address from;
         address to;
         bool approvalStatus;
+        uint256 timestamp;
     }
 
     event requestAdded(uint256 requestId);
@@ -111,7 +112,8 @@ contract Mudrika {
             to: to,
             fund: amount,
             requestId: requestCount + 1,
-            approvalStatus: false
+            approvalStatus: false,
+            timestamp: block.timestamp
         });
 
         requestsReceived[requestCount + 1] = newReq;
