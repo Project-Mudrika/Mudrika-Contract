@@ -1,6 +1,13 @@
-contract Consignment {
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.8.0;
+
+import "hardhat/console.sol";
+import "./mudrika.sol";
+
+contract Consignment_Tracker {
     address private _owner;
-    address public mudrika;
+    // address public mudrika;
+    Mudrika public mudrika;
 
     enum Status {
         IN_TRANSIT,
@@ -18,46 +25,72 @@ contract Consignment {
         Status status;
     }
 
-    mapping(uint256 => ConsignmentId) public 
+    mapping(uint256 => Consignment) public consignments;
 
-    constructor(mudrika_address: address) {
+    constructor(address mudrika_address) {
         _owner = msg.sender;
-        mudrika = mudrika_address;
+        mudrika = Mudrika(mudrika_address);
     }
 
     modifier authority() {
         // TODO:
+        _;
     }
 
     modifier driver() {
         // TODO:
+        _;
     }
 
-    function updateContract(address mudrika_address) {
+    function updateContract(address mudrika_address) public {
         // TODO:
+        mudrika = Mudrika(mudrika_address);
     }
 
-    function addConsignment(uint256 consignmentId, uint256 requestId, string name, uint256 quantity, string start_location) {
+    function addConsignment(
+        uint256 consignmentId,
+        uint256 requestId,
+        string memory name,
+        uint256 quantity,
+        string memory start_location
+    ) public {
         // TODO:
-        Consignment memory assignment = new Consignment({consignmentId, 
-            requestId, 
-            name, 
-            quantity, 
-            start_location, 
+        Consignment memory consignment = Consignment({
+            consignmentId: consignmentId,
+            requestId: requestId,
+            name: name,
+            quantity: quantity,
+            start_location: start_location,
             curr_location: start_location,
             status: Status.ACCEPTED
         });
+
+        consignments[consignmentId] = consignment;
     }
 
-    function updateConsignmentStatus(uint256 consignmentId, uint256 status){
+    function updateConsignmentStatus(uint256 consignmentId, uint256 status)
+        public
+    {
         // TODO:
+
+        consignments[consignmentId].status = Status(status);
     }
 
-    function updateConsignmentLocation(uint256 consignmentId, string location) driver {
+    function updateConsignmentLocation(
+        uint256 consignmentId,
+        string memory location
+    ) public driver {
         // TODO:
+
+        consignments[consignmentId].curr_location = location;
     }
 
-    function getConsignmentStatus(uint256 consignmentId) public view {
+    function getConsignmentStatus(uint256 consignmentId)
+        public
+        view
+        returns (Status)
+    {
         // TODO:
+        return consignments[consignmentId].status;
     }
 }
