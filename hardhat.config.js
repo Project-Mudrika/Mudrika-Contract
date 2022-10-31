@@ -23,9 +23,9 @@ module.exports = {
     hardhat: {
       chainId: 1337
     },
-    rinkeby: {
+    mumbai: {
       url: process.env.RPC_URL,
-      chainId: 4,
+      chainId: 80001,
       accounts: [process.env.PVT_KEY]
     }
   },
