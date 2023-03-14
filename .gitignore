@@ -12,6 +12,7 @@ contracts/nft.sol
 scripts/sample-script.js
 test/sample-test.js
 .env.local
+.idea/
 
 #Hardhat files
 cache

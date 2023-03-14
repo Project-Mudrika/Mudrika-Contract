@@ -13,8 +13,10 @@ contract Mudrika {
     enum UserType {
         PUBLIC,
         VOLUNTEER,
-        AUTHORITY_LOW,
-        AUTHORITY_HIGH,
+        DRIVER,
+        DISTRICT,
+        STATE,
+        NATIONAL,
         ADMIN
     }
 
@@ -35,7 +37,7 @@ contract Mudrika {
     }
 
     event requestAdded(uint256 requestId);
-    event fundTransferred(uint256 requestId, uint256 amount, address to);
+    event fundTransferred(uint256 requestId, uint256 amount, address to, address approver);
     event fundDeposited(uint256 amount, address by);
 
     modifier onlyAdmin() {
@@ -48,7 +50,7 @@ contract Mudrika {
 
     modifier higherAuthority() {
         require(
-            users[msg.sender].userType == UserType.AUTHORITY_HIGH,
+            users[msg.sender].userType == UserType.NATIONAL,
             "Only HigherAuthority can perform this action"
         );
         _;
@@ -56,7 +58,7 @@ contract Mudrika {
 
     modifier lowerAuthority() {
         require(
-            users[msg.sender].userType == UserType.AUTHORITY_LOW,
+            users[msg.sender].userType == UserType.STATE,
             "Only LowerAuthority can perform this action"
         );
         _;
@@ -141,7 +143,7 @@ contract Mudrika {
         require(amount <= address(this).balance, "Insufficient Funds");
         requestsReceived[requestId].approvalStatus = true;
         payable(to).transfer(amount);
-        emit fundTransferred(requestId, amount, to);
+        emit fundTransferred(requestId, amount, to, msg.sender);
     }
 
     // function viewRequests() public view higherAuthority returns (Request) {}

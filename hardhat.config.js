@@ -27,6 +27,11 @@ module.exports = {
       url: process.env.RPC_URL,
       chainId: 80001,
       accounts: [process.env.PVT_KEY]
+    },
+    polygon: {
+      url: "https://polygon-rpc.com/",
+      chainId: 137,
+      accounts: [process.env.PVT_KEY]
     }
   },
 };
