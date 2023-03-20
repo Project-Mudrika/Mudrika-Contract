@@ -21,6 +21,7 @@ contract Consignment_Tracker {
         uint256 quantity;
         string start_location;
         string curr_location;
+        string destination;
         Status status;
     }
 
@@ -46,7 +47,8 @@ contract Consignment_Tracker {
         address receiver,
         string memory name,
         uint256 quantity,
-        string memory start_location
+        string memory start_location,
+        string memory destination
     ) public {
         // TODO:
         Consignment memory consignment = Consignment({
@@ -59,6 +61,7 @@ contract Consignment_Tracker {
             quantity: quantity,
             start_location: start_location,
             curr_location: start_location,
+            destination: destination,
             status: Status.ACCEPTED
         });
 
@@ -93,7 +96,7 @@ contract Consignment_Tracker {
     function getConsignmentLocation(
         uint256 consignmentId
     ) public view returns (string memory) {
-        string memory res = string(abi.encodePacked(consignments[consignmentId].curr_holder, consignments[consignmentId].curr_location));
+        string memory res = consignments[consignmentId].curr_location;
     return res;
     }
 
